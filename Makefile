@@ -25,6 +25,7 @@ OBJDIR ?= src
 
 CURDIR := $(notdir $(shell pwd))
 EXEC ?= $(CURDIR)
+# SYMBOLIC ?= ../../$(EXEC)
 STATIC := lib$(EXEC).a
 DYNAMIC := lib$(CURDIR).so
 
@@ -45,7 +46,7 @@ DBGFLAGS := $(OPTLEVEL)
 
 MLCMESSAGE=@$(ECHO) "\t MLC \t\t $(notdir $@)"
 
-.PHONY: all clean mrproper
+.PHONY: all clean mrproper symbolic
 
 .DEFAULT_GOAL = all
 
@@ -54,6 +55,11 @@ all: $(EXEC)
 $(EXEC): $(SRC)
 	$(LDMESSAGE)
 	$(QUIET)$(LD) -o $@ $^ $(LDFLAGS)
+
+symbolic: $(SYMBOLIC)
+
+$(SYMBOLIC): $(EXEC)
+	ln -s $(shell realpath $(EXEC)) $(SYMBOLIC)
 
 %/.f:
 	$(QUIET)mkdir -p $(dir $@)
