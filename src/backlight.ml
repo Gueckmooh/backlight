@@ -1,9 +1,11 @@
 open Printf
 open Scanf
 
-let brightness_file = "/sys/class/backlight/intel_backlight/brightness"
-let max_brightness_file = "/sys/class/backlight/intel_backlight/max_brightness"
+(* let brightness_file = "/sys/class/backlight/intel_backlight/brightness"
+ * let max_brightness_file = "/sys/class/backlight/intel_backlight/max_brightness" *)
 
+let brightness_file = "BRIGHTNESS"
+let max_brightness_file = "MAX_BRIGHTNESS"
 
 let current_brightness =
   let ic = open_in brightness_file in

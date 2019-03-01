@@ -12,6 +12,7 @@ AS = $(TARGET)as
 AR = ar
 VALGRIND = valgrind
 LD = ocamlopt
+M4=m4
 
 MKDIR := $(QUIET)mkdir -p
 CD := $(QUIET)cd
@@ -44,7 +45,11 @@ FLAGS += $(addprefix -I, $(INCDIR))
 
 DBGFLAGS := $(OPTLEVEL)
 
+LDMESSAGE=@$(ECHO) "\t MLLD \t\t $(notdir $@)"
 MLCMESSAGE=@$(ECHO) "\t MLC \t\t $(notdir $@)"
+M4MESSAGE=@$(ECHO) "\t M4 \t\t $(notdir $@)"
+
+include config.mk
 
 .PHONY: all clean mrproper symbolic
 
@@ -52,7 +57,11 @@ MLCMESSAGE=@$(ECHO) "\t MLC \t\t $(notdir $@)"
 
 all: $(EXEC)
 
-$(EXEC): $(SRC)
+.pre/%.ml: src/%.ml $$(@D)/.f
+	$(M4MESSAGE)
+	$(QUIET)$(M4) -D BRIGHTNESS=$(BRIGHTNESS) -D MAX_BRIGHTNESS=$(MAX_BRIGHTNESS) $< > $@
+
+$(EXEC): $(addprefix .pre/, $(notdir $(SRC)))
 	$(LDMESSAGE)
 	$(QUIET)$(LD) -o $@ $^ $(LDFLAGS)
 
@@ -75,6 +84,7 @@ clean:
 	rm -f $(SRCDIR)/*.cmi
 	rm -f $(SRCDIR)/*.cmx
 	rm -f $(SRCDIR)/*.o
+	rm -rf .pre
 
 mrproper: clean
 	rm -f $(EXEC)
