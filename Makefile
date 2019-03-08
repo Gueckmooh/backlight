@@ -57,13 +57,13 @@ include config.mk
 
 all: $(EXEC)
 
-.pre/%.ml: src/%.ml $$(@D)/.f
-	$(M4MESSAGE)
-	$(QUIET)$(M4) -D BRIGHTNESS=$(BRIGHTNESS) -D MAX_BRIGHTNESS=$(MAX_BRIGHTNESS) $< > $@
+# .pre/%.ml: src/%.ml $$(@D)/.f
+# 	$(M4MESSAGE)
+# 	$(QUIET)$(M4) -D BRIGHTNESS=$(BRIGHTNESS) -D MAX_BRIGHTNESS=$(MAX_BRIGHTNESS) $< > $@
 
-$(EXEC): $(addprefix .pre/, $(notdir $(SRC)))
+$(EXEC): $(SRC)
 	$(LDMESSAGE)
-	$(QUIET)$(LD) -o $@ $^ $(LDFLAGS)
+	$(QUIET)$(LD) -pp "$(M4) -D BRIGHTNESS=$(BRIGHTNESS) -D MAX_BRIGHTNESS=$(MAX_BRIGHTNESS)" -o $@ $^ $(LDFLAGS)
 
 symbolic: $(SYMBOLIC)
 
